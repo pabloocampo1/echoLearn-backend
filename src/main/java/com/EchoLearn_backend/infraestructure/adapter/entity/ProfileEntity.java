@@ -1,5 +1,6 @@
 package com.EchoLearn_backend.infraestructure.adapter.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class ProfileEntity {
     private Integer id_profile;
 
     @OneToOne(mappedBy = "profile")
+    @JsonIgnore
     private UserEntity user;
 
     private Integer points;

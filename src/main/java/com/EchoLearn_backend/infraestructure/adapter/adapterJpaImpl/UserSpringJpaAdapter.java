@@ -68,4 +68,37 @@ public class UserSpringJpaAdapter implements UserPersistencePort {
 
         return this.userDboMapper.toDomain(this.userRepository.save(userEntity));
     }
+
+    @Override
+    public Boolean existByEmail(String email) {
+        return this.userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        UserEntity user = this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("USER WITH THAT EMAIL, NO EXIST"));
+        return this.userDboMapper.toDomain(user) ;
+    }
+
+    @Override
+    public List<User> getAll() {
+        List<UserEntity> userEntityList = (List<UserEntity>) this.userRepository.findAll();
+        return userEntityList
+                .stream()
+                .map(this.userDboMapper::toDomain)
+                .toList();
+    }
+
+    public void  updatePasswordUser(User user){
+        UserEntity userEntity = this.userRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not exist"));
+        userEntity.setPassword(user.getPassword());
+
+       try{
+           this.userRepository.save(userEntity);
+       } catch (Exception e) {
+           throw new RuntimeException(e);
+       }
+    }
 }

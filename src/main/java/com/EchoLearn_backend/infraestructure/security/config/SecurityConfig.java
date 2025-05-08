@@ -39,10 +39,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfig.configurationSource()))
                 .authorizeHttpRequests(request -> {
+                    // auth
+                    request.requestMatchers(HttpMethod.GET, "/api/auth/isValidJwt").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/api/auth/generateTokenResetPassword/*").permitAll();
+                    request.requestMatchers(HttpMethod.GET, "/api/auth/codeValid/*").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/api/user/signUp").permitAll();
                     request.requestMatchers(HttpMethod.POST, "/api/auth/signIn").permitAll();
-                    request.requestMatchers(HttpMethod.GET, "/api/auth/isValidJwt").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/api/auth/resetPassword").permitAll();
+
+                    // user
                     request.requestMatchers(HttpMethod.GET, "/api/user").hasRole(roleAdmin);
+                    request.requestMatchers(HttpMethod.GET, "/api/user/getAll").hasRole(roleAdmin);
+
+                    // category
                     request.requestMatchers( "/api/category/**").permitAll();
                     request.anyRequest().authenticated();
                 })

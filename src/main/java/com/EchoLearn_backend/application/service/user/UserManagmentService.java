@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class UserManagmentService implements UserUseCases {
     @Autowired
@@ -41,5 +43,10 @@ public class UserManagmentService implements UserUseCases {
            e.printStackTrace();
            throw new RuntimeException(e);
        }
+    }
+
+    @Override
+    public List<User> getAll() {
+        return this.userPersistencePort.getAll();
     }
 }
