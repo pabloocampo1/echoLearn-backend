@@ -1,4 +1,6 @@
 HELP.md
+# En tu archivo .gitignore
+application.properties
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
