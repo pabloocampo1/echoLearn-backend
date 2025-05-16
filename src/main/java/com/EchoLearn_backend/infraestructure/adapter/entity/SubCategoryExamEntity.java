@@ -40,8 +40,7 @@ public class SubCategoryExamEntity {
     private LocalDateTime updateDate;
 
 
-    @ManyToOne
-    @JoinColumn( name = "id_category",referencedColumnName = "id_category")
+    @ManyToMany(mappedBy = "id_category")
     private CategoryExamEntity category;
 
     @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)

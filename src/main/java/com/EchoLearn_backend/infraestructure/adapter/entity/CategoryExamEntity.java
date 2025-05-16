@@ -40,5 +40,14 @@ public class CategoryExamEntity {
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    @ManyToMany
+    @JoinTable(
+            name = "category_subcategory",
+            joinColumns = @JoinColumn(name = "id_category"),
+            inverseJoinColumns = @JoinColumn(name = "id_subcategory")
+    )
+    private List<SubCategoryExamEntity> subcategories;
+
+
 
 }

@@ -8,18 +8,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CategoryMapperApplication {
-    public CategoryDto toResponse(Category category){
-        return CategoryDto
-                .builder()
-                .title(category.getTitle())
-                .description(category.getDescription())
-                .build();
-    }
+
     public Category toDomain(CategoryDto category){
         return Category
                 .builder()
+                .id_category(category.getId())
                 .title(category.getTitle())
                 .description(category.getDescription())
+                .available(category.getAvailable())
                 .build();
     }
 

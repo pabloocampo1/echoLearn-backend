@@ -1,9 +1,12 @@
 package com.EchoLearn_backend.infraestructure.rest.controler;
 
 import com.EchoLearn_backend.application.service.auth.AuthService;
+import com.EchoLearn_backend.application.usecases.User.UserUseCases;
 import com.EchoLearn_backend.infraestructure.rest.dto.auth.AuthResponse;
 import com.EchoLearn_backend.infraestructure.rest.dto.auth.LoginDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.auth.RequestResetPassword;
+import com.EchoLearn_backend.infraestructure.rest.dto.user.UserDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.user.UserResponse;
 import com.EchoLearn_backend.infraestructure.security.jwt.JwtUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +21,13 @@ public class AuthController {
     private final AuthService authService;
 
     @Autowired
+    private final UserUseCases useCases;
+
+    @Autowired
     private final JwtUtils jwtUtils;
-    public AuthController( AuthService authService, JwtUtils jwtUtils) {
+    public AuthController(AuthService authService, UserUseCases useCases, JwtUtils jwtUtils) {
         this.authService = authService;
+        this.useCases = useCases;
         this.jwtUtils = jwtUtils;
     }
 
@@ -29,6 +36,15 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(@RequestBody LoginDto loginDto){
         try{
             return new ResponseEntity<>(this.authService.login(loginDto.getUsername(), loginDto.getPassword()),HttpStatus.ACCEPTED );
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/signUp")
+    public ResponseEntity<UserResponse> create(@RequestBody UserDto userDto){
+        try {
+            return new ResponseEntity<>( this.useCases.save(userDto), HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

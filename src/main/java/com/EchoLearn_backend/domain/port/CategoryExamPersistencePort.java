@@ -7,5 +7,11 @@ import java.util.List;
 
 public interface CategoryExamPersistencePort {
     List<Category> getAll();
+    List<Category> getAllAvailable();
+    void deleteCategory(Integer id);
     Category save(Category category);
+    Category update (Category category);
+    Category findById(Integer id);
+    List<Category> findByName(String name);
+    Boolean existById(Integer id);
 }

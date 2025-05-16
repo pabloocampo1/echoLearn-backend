@@ -40,19 +40,19 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfig.configurationSource()))
                 .authorizeHttpRequests(request -> {
                     // auth
-                    request.requestMatchers(HttpMethod.GET, "/api/auth/isValidJwt").permitAll();
-                    request.requestMatchers(HttpMethod.GET, "/api/auth/generateTokenResetPassword/*").permitAll();
-                    request.requestMatchers(HttpMethod.GET, "/api/auth/codeValid/*").permitAll();
-                    request.requestMatchers(HttpMethod.POST, "/api/user/signUp").permitAll();
-                    request.requestMatchers(HttpMethod.POST, "/api/auth/signIn").permitAll();
-                    request.requestMatchers(HttpMethod.POST, "/api/auth/resetPassword").permitAll();
+                    request.requestMatchers("/api/auth/**").permitAll();
 
                     // user
                     request.requestMatchers(HttpMethod.GET, "/api/user").hasRole(roleAdmin);
                     request.requestMatchers(HttpMethod.GET, "/api/user/getAll").hasRole(roleAdmin);
 
                     // category
-                    request.requestMatchers( "/api/category/**").permitAll();
+                    request.requestMatchers( "/api/category/**").hasRole(roleAdmin);
+
+
+                    // subCategory
+                    request.requestMatchers("/api/subcategory/**").hasRole(roleAdmin);
+
                     request.anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

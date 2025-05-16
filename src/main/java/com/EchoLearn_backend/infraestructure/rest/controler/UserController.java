@@ -32,12 +32,5 @@ public class UserController {
         return new ResponseEntity<>(userResponseList.stream().map(this.userMapper::userToResponse).toList(), HttpStatus.OK);
     }
 
-    @PostMapping("/signUp")
-    public ResponseEntity<UserResponse> create(@RequestBody UserDto userDto){
-        try {
-            return new ResponseEntity<>( this.userService.save(userDto), HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-    }
+
 }

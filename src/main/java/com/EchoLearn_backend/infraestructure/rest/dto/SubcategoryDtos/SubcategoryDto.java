@@ -1,33 +1,31 @@
-package com.EchoLearn_backend.domain.model;
+package com.EchoLearn_backend.infraestructure.rest.dto.SubcategoryDtos;
 
+import com.EchoLearn_backend.domain.model.Category;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SubCategory {
-    @NotNull
-    private Integer id_subcategory;
+public class SubcategoryDto {
+    private Integer id_Subcategory;
+
     @NotBlank
     private String title;
+
     @NotBlank
     private String description;
 
     @NotBlank
     private Boolean available;
 
-    @NotNull
-    private Integer category;
-
-    private LocalDateTime createDate;
-
-    private List<TopicExam> topicExams;
+    @NotBlank
+    private Integer id_category;
 
 }

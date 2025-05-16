@@ -11,6 +11,17 @@ public class CategoryMapper {
     public CategoryExamEntity toDbo(Category category){
         return CategoryExamEntity
                 .builder()
+                .id_category(category.getId_category())
+                .title(category.getTitle())
+                .description(category.getDescription())
+                .available(category.getAvailable())
+                .build();
+    }
+
+    public CategoryExamEntity RequestToDbo(CategoryDto category){
+        return CategoryExamEntity
+                .builder()
+                .id_category(category.getId())
                 .title(category.getTitle())
                 .description(category.getDescription())
                 .available(category.getAvailable())
@@ -30,8 +41,13 @@ public class CategoryMapper {
     public CategoryDto toResponse(Category category){
         return CategoryDto
                 .builder()
+                .id(category.getId_category())
                 .title(category.getTitle())
                 .description(category.getDescription())
+                .available(category.getAvailable())
+                .createDate(category.getCreateDate())
                 .build();
     }
+
+
 }
