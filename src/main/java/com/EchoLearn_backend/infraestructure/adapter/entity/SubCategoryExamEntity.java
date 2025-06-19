@@ -34,14 +34,18 @@ public class SubCategoryExamEntity {
     private Boolean available;
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createDate;
 
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    private String imageUrl;
 
-    @ManyToMany(mappedBy = "id_category")
-    private CategoryExamEntity category;
+    // SubCategoryExamEntity.java
+    @ManyToMany(mappedBy = "subcategories")
+    private List<CategoryExamEntity> categories;
+
 
     @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TopicExamsEntity> topics;

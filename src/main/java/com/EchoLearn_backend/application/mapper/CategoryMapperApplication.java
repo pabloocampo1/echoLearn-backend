@@ -16,6 +16,7 @@ public class CategoryMapperApplication {
                 .title(category.getTitle())
                 .description(category.getDescription())
                 .available(category.getAvailable())
+                .imageUrl(category.getImageUrl())
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class CategoryMapperApplication {
                 .builder()
                 .title(category.getTitle())
                 .description(category.getDescription())
+                .imageUrl(category.getImageUrl())
                 .build();
     }
 }

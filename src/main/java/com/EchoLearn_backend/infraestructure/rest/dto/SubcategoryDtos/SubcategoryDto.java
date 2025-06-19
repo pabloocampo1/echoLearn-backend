@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +27,8 @@ public class SubcategoryDto {
     private Boolean available;
 
     @NotBlank
-    private Integer id_category;
+    private List<Integer> id_categories;
+
+    private String imageUrl;
 
 }

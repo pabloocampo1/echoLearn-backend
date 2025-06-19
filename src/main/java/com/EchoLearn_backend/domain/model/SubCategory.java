@@ -24,10 +24,12 @@ public class SubCategory {
     private Boolean available;
 
     @NotNull
-    private Integer category;
+    private List<Integer> categories;
 
     private LocalDateTime createDate;
 
     private List<TopicExam> topicExams;
+
+    private String image;
 
 }

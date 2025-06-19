@@ -40,6 +40,8 @@ public class CategoryExamEntity {
     @LastModifiedDate
     private LocalDateTime updateDate;
 
+    private String imageUrl;
+
     @ManyToMany
     @JoinTable(
             name = "category_subcategory",
@@ -47,6 +49,7 @@ public class CategoryExamEntity {
             inverseJoinColumns = @JoinColumn(name = "id_subcategory")
     )
     private List<SubCategoryExamEntity> subcategories;
+
 
 
 

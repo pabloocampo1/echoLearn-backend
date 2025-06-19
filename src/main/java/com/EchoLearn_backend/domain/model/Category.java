@@ -25,4 +25,6 @@ public class Category {
     private LocalDateTime createDate;
 
     private List<SubCategory> subcategoryExams;
+
+    private String imageUrl;
 }

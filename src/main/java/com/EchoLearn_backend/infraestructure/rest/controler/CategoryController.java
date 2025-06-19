@@ -1,11 +1,13 @@
 package com.EchoLearn_backend.infraestructure.rest.controler;
 
 import com.EchoLearn_backend.application.mapper.CategoryMapperApplication;
+import com.EchoLearn_backend.application.service.CloudinaryService;
 import com.EchoLearn_backend.application.usecases.CategoryUseCase.CategoryUseCase;
 
 import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.CategoryMapper;
 import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryDto;
+import com.cloudinary.Cloudinary;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,16 @@ public class CategoryController {
     @Autowired
     private final CategoryMapperApplication categoryMapperApplication;
 
+    @Autowired
+    private final CloudinaryService cloudinaryService;
 
-    public CategoryController(CategoryUseCase useCase, CategoryMapper categoryMapper, CategoryMapperApplication categoryMapperApplication) {
+
+    public CategoryController(CategoryUseCase useCase, CategoryMapper categoryMapper, CategoryMapperApplication categoryMapperApplication, CloudinaryService cloudinaryService) {
         this.useCase = useCase;
 
         this.categoryMapper = categoryMapper;
         this.categoryMapperApplication = categoryMapperApplication;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @GetMapping
@@ -86,24 +92,26 @@ public class CategoryController {
             @RequestParam Boolean available,
             @RequestParam(required = false) MultipartFile image
     ) {
+        String imageUrl = null;
         try {
+            if(image != null){
+                imageUrl = this.cloudinaryService.uploadImage(image);
+            }
             CategoryDto dto = CategoryDto
                     .builder()
                     .id(id)
                     .title(title)
                     .description(description)
                     .available(available)
+                    .imageUrl(imageUrl)
                     .build();
-            System.out.println(dto);
 
-            if (image != null && !image.isEmpty()) {
-
-                System.out.println("Imagen recibida: " + image.getOriginalFilename());
-            }
             return new ResponseEntity<>(
                     this.categoryMapper.toResponse(this.useCase.save(this.categoryMapperApplication.toDomain(dto))
                     ), HttpStatus.CREATED);
         } catch (Exception e) {
+            e.printStackTrace();
+            this.cloudinaryService.deleteFile(imageUrl);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

@@ -18,5 +18,5 @@ public interface SubcategoryPersistencePort {
     Page<SubCategory> getAll(Pageable pageable);
     Page<SubCategory> getAllAvailable(Pageable pageable);
     Page<SubCategory> getByCategory(Category category, Pageable pageable);
-
+    List<SubCategory> getByTitle(String title);
 }

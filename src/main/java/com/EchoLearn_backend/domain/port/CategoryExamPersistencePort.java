@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CategoryExamPersistencePort {
     List<Category> getAll();
+    List<Category> findAllById(List<Integer> ids);
     List<Category> getAllAvailable();
     void deleteCategory(Integer id);
     Category save(Category category);

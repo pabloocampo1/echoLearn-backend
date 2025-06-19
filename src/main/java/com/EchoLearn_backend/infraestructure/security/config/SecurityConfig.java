@@ -21,8 +21,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
-
-
     private static final String roleAdmin = "ADMIN";
     private static final String roleSuperAdmin = "SUPERADMIN";
     private static final String roleUser = "USER";
@@ -48,7 +46,6 @@ public class SecurityConfig {
 
                     // category
                     request.requestMatchers( "/api/category/**").hasRole(roleAdmin);
-
 
                     // subCategory
                     request.requestMatchers("/api/subcategory/**").hasRole(roleAdmin);

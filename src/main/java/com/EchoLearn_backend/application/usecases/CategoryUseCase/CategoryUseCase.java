@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface CategoryUseCase {
     List<Category> getAll();
+    List<Category> getAllById(List<Integer> ids);
     List<Category> getAllAvailable();
     Category save(Category user);
     Category update(CategoryDto category);

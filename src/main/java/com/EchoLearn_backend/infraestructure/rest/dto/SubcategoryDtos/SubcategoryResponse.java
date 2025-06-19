@@ -1,6 +1,6 @@
 package com.EchoLearn_backend.infraestructure.rest.dto.SubcategoryDtos;
 
-import com.EchoLearn_backend.domain.model.Category;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,9 +26,11 @@ public class SubcategoryResponse {
 
     private Boolean available;
 
-    private String category;
+    private List<String> categories;
 
     private LocalDateTime createDate;
+
+    private String imageUrl;
 
 
 }

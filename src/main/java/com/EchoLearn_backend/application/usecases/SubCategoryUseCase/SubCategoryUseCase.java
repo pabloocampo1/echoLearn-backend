@@ -14,4 +14,5 @@ public interface SubCategoryUseCase {
     SubCategory findById(Integer id);
     void delete(Integer id);
     Page<SubCategory> getByCategory(Integer id, Pageable pageable);
+    List<SubCategory> getByTitle(String title);
 }

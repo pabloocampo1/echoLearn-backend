@@ -30,6 +30,7 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'com.auth0:java-jwt:4.5.0'
+	implementation group: 'com.cloudinary', name: 'cloudinary-http44', version: '1.39.0'
 }
 
 tasks.named('test') {

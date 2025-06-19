@@ -5,14 +5,12 @@ import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.domain.model.SubCategory;
 import com.EchoLearn_backend.domain.port.CategoryExamPersistencePort;
 import com.EchoLearn_backend.domain.port.SubcategoryPersistencePort;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-
 
 
 import java.util.List;
@@ -35,9 +33,7 @@ public class SubCategoryService implements SubCategoryUseCase {
     @Transactional
     public SubCategory save(SubCategory subCategory) {
         try {
-
-            this.validateCategory(subCategory.getCategory());
-            System.out.println("se valido lo de la categoria");
+            this.validateCategory(subCategory.getCategories());
             return this.subcategoryPersistencePort.save(subCategory);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -49,8 +45,8 @@ public class SubCategoryService implements SubCategoryUseCase {
     @Transactional
     public SubCategory update(SubCategory subCategory) {
         try {
+            // validar si la subcategoria existe
             this.validateSubCategoryExists(subCategory.getId_subcategory());
-            this.validateCategory(subCategory.getCategory());
             return this.subcategoryPersistencePort.save(subCategory);
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -90,13 +86,21 @@ public class SubCategoryService implements SubCategoryUseCase {
        }
     }
 
-    private void validateCategory(Integer id){
-        if (id == null || id <= 0) {
-            throw new IllegalArgumentException("Not there are one category");
-        }
-        if (!this.categoryExamPersistencePort.existById(id)) {
-            throw new IllegalArgumentException("Not there are one category");
-        }
+    @Override
+    public List<SubCategory> getByTitle(@Valid String title) {
+        return this.subcategoryPersistencePort.getByTitle(title);
+    }
+
+    private void validateCategory(List<Integer> ids){
+       ids.forEach((id) -> {
+           if (id == null || id <= 0) {
+               throw new IllegalArgumentException("Not there are one category");
+           }
+           if (!this.categoryExamPersistencePort.existById(id)) {
+               throw new IllegalArgumentException("Not there are one category");
+           }
+       });
+
     }
 
     private void validateSubCategoryExists(Integer id) {

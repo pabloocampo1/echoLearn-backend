@@ -33,6 +33,11 @@ public class CategoryExamService implements CategoryUseCase {
     }
 
     @Override
+    public List<Category> getAllById(List<Integer> ids) {
+        return this.categoryExamPersistencePort.findAllById(ids);
+    }
+
+    @Override
     public List<Category> getAllAvailable() {
         return this.categoryExamPersistencePort.getAllAvailable();
     }

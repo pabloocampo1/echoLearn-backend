@@ -5,10 +5,14 @@ import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntit
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 public interface SubcategoryRepository extends JpaRepository<SubCategoryExamEntity, Integer> {
-    Page<SubCategoryExamEntity> findByAvailableTrueAndCategory(CategoryExamEntity categoryExamEntity, Pageable pageable);
+ //   @Query("select * from subcategory_exam from",nativeQuery = true )
+  //  Page<SubCategoryExamEntity> findByAvailableTrueAndCategory(@PathVariable("id") Integer id, Pageable pageable);
+ List<SubCategoryExamEntity> findAllByTitleContainingIgnoreCase(String title);
 }

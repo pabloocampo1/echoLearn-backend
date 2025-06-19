@@ -32,6 +32,13 @@ public class CategoryExamJpaAdapter  implements CategoryExamPersistencePort {
     }
 
     @Override
+    public List<Category> findAllById(List<Integer> ids) {
+        List<CategoryExamEntity> categoryExamEntities = (List<CategoryExamEntity>) this.categoryRepository.findAllById(ids);
+
+        return categoryExamEntities.stream().map(this.categoryMapper::toDomain).toList();
+    }
+
+    @Override
     public List<Category> getAllAvailable() {
         List<CategoryExamEntity> categories = (List<CategoryExamEntity>) this.categoryRepository.findByAvailableTrue();
         return categories

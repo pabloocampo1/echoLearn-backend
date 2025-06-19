@@ -1,15 +1,18 @@
 package com.EchoLearn_backend.application.mapper;
 
 import com.EchoLearn_backend.application.usecases.CategoryUseCase.CategoryUseCase;
-import com.EchoLearn_backend.application.usecases.SubCategoryUseCase.SubCategoryUseCase;
 import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.domain.model.SubCategory;
 import com.EchoLearn_backend.infraestructure.rest.dto.SubcategoryDtos.SubcategoryDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.SubcategoryDtos.SubcategoryResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class SubcategoryMapper {
+    @Autowired
     private final CategoryUseCase categoryUseCase;
 
     public SubcategoryMapper(CategoryUseCase categoryUseCase) {
@@ -17,7 +20,8 @@ public class SubcategoryMapper {
     }
 
     public SubcategoryResponse toResponse(SubCategory subCategory){
-        Category category = this.categoryUseCase.findById(subCategory.getCategory());
+        List<Category> categories = this.categoryUseCase.getAllById(subCategory.getCategories());
+        List<String> namesCategory = categories.stream().map(Category::getTitle).toList();
         return SubcategoryResponse
                 .builder()
                 .id_subcategory(subCategory.getId_subcategory())
@@ -25,10 +29,11 @@ public class SubcategoryMapper {
                 .description(subCategory.getDescription())
                 .createDate(subCategory.getCreateDate())
                 .available(subCategory.getAvailable())
-                .category(category.getTitle())
+                .categories(namesCategory)
+                .imageUrl(subCategory.getImage())
                 .build();
     }
-
+// crear metdi o solo para editar
     public SubCategory toDomain (SubcategoryDto subcategoryDto) {
         return SubCategory
                 .builder()
@@ -36,7 +41,8 @@ public class SubcategoryMapper {
                 .title(subcategoryDto.getTitle())
                 .description(subcategoryDto.getDescription())
                 .available(subcategoryDto.getAvailable())
-                .category(subcategoryDto.getId_category())
+                .categories(subcategoryDto.getId_categories())
+                .image(subcategoryDto.getImageUrl())
                 .build();
     }
 }

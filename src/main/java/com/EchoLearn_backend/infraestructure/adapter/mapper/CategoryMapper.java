@@ -15,6 +15,7 @@ public class CategoryMapper {
                 .title(category.getTitle())
                 .description(category.getDescription())
                 .available(category.getAvailable())
+                .imageUrl(category.getImageUrl())
                 .build();
     }
 
@@ -25,6 +26,7 @@ public class CategoryMapper {
                 .title(category.getTitle())
                 .description(category.getDescription())
                 .available(category.getAvailable())
+                .imageUrl(category.getImageUrl())
                 .build();
     }
 
@@ -35,6 +37,7 @@ public class CategoryMapper {
                 .title(category.getTitle())
                 .available(category.getAvailable())
                 .description(category.getDescription())
+                .imageUrl(category.getImageUrl())
                 .build();
     }
 
@@ -46,6 +49,7 @@ public class CategoryMapper {
                 .description(category.getDescription())
                 .available(category.getAvailable())
                 .createDate(category.getCreateDate())
+                .imageUrl(category.getImageUrl())
                 .build();
     }
 
