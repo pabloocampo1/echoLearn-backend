@@ -91,6 +91,17 @@ public class SubCategoryService implements SubCategoryUseCase {
         return this.subcategoryPersistencePort.getByTitle(title);
     }
 
+    @Override
+    public List<SubCategory> getAllById(List<Integer> ids) {
+        return this.subcategoryPersistencePort.findAllById(ids);
+    }
+
+    @Override
+    public List<Integer> existAllById(List<Integer> ids) {
+
+        return this.subcategoryPersistencePort.existAllById(ids) ;
+    }
+
     private void validateCategory(List<Integer> ids){
        ids.forEach((id) -> {
            if (id == null || id <= 0) {

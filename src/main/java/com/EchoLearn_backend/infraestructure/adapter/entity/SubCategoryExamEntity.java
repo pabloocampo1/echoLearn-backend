@@ -1,10 +1,8 @@
 package com.EchoLearn_backend.infraestructure.adapter.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -42,11 +40,12 @@ public class SubCategoryExamEntity {
 
     private String imageUrl;
 
-    // SubCategoryExamEntity.java
     @ManyToMany(mappedBy = "subcategories")
     private List<CategoryExamEntity> categories;
 
+    @ManyToMany(mappedBy = "subCategories", fetch = FetchType.LAZY)
 
-    @OneToMany(mappedBy = "subcategory", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TopicExamsEntity> topics;
+    private List<ExamEntity> exams;
+
+
 }

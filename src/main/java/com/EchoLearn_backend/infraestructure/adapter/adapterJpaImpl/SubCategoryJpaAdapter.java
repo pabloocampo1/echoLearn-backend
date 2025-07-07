@@ -130,4 +130,17 @@ public class SubCategoryJpaAdapter implements SubcategoryPersistencePort {
         List<SubCategory> subCategoryList = subCategoryExamEntityList.stream().map(this.subcategoryDboMapper::toDomain).toList();
         return subCategoryList;
     }
+
+    @Override
+    public List<SubCategory> findAllById(List<Integer> ids) {
+        List<SubCategoryExamEntity> entities = this.subcategoryRepository.findAllById(ids);
+        List<SubCategory> subCategoriesToReturn = entities.stream().map(this.subcategoryDboMapper::toDomain).toList();
+        return subCategoriesToReturn;
+    }
+
+    @Override
+    public List<Integer> existAllById(List<Integer> ids) {
+       // Boolean exist = this.subcategoryRepository.
+        return List.of();
+    }
 }

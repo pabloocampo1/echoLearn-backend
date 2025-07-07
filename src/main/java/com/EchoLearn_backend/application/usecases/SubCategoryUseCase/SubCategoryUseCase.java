@@ -15,4 +15,6 @@ public interface SubCategoryUseCase {
     void delete(Integer id);
     Page<SubCategory> getByCategory(Integer id, Pageable pageable);
     List<SubCategory> getByTitle(String title);
+    List<SubCategory> getAllById(List<Integer> ids);
+    List<Integer> existAllById(List<Integer> ids);
 }

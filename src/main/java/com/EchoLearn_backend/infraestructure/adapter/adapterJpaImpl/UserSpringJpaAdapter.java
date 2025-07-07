@@ -55,7 +55,7 @@ public class UserSpringJpaAdapter implements UserPersistencePort {
         UserEntity userEntity = this.userDboMapper.toDbo(user);
         ProfileEntity profile = new ProfileEntity();
         // always asigned the role user when one user is register in the sign up
-        RoleEntity role = this.roleCrudRepository.findById(2)
+        RoleEntity role = this.roleCrudRepository.findById(1)
                 .orElseThrow(() -> new UsernameNotFoundException("ROLE NO FOUND"));
 
         // initial config - profile

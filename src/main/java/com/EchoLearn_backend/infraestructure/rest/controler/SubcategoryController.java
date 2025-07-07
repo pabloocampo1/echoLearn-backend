@@ -55,7 +55,6 @@ public class SubcategoryController {
         List<SubCategory> subCategoryList = this.subCategoryUseCase.getByTitle(title);
         List<SubcategoryResponse> subcategoryResponseList = subCategoryList.stream().map( this.subcategoryMapper::toResponse).toList();
         return new ResponseEntity<>(subcategoryResponseList, HttpStatus.OK);
-
     }
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

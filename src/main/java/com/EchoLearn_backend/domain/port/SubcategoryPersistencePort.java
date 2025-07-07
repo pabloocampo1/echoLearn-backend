@@ -19,4 +19,6 @@ public interface SubcategoryPersistencePort {
     Page<SubCategory> getAllAvailable(Pageable pageable);
     Page<SubCategory> getByCategory(Category category, Pageable pageable);
     List<SubCategory> getByTitle(String title);
+    List<SubCategory> findAllById(List<Integer> ids);
+    List<Integer> existAllById(List<Integer> ids);
 }

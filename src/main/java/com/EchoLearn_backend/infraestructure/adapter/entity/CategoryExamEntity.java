@@ -1,11 +1,8 @@
 package com.EchoLearn_backend.infraestructure.adapter.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -48,6 +45,7 @@ public class CategoryExamEntity {
             joinColumns = @JoinColumn(name = "id_category"),
             inverseJoinColumns = @JoinColumn(name = "id_subcategory")
     )
+    @ToString.Exclude
     private List<SubCategoryExamEntity> subcategories;
 
 
