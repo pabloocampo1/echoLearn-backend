@@ -5,11 +5,13 @@ import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.domain.model.QuestionModel;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
 
+import java.util.List;
+
 public interface ExamUseCase {
     ExamModel saveSingleExam(ExamModel examModel);
 
-    void saveExam(ExamCreateDto examCreateDto);
-
+    ExamModel saveExam(ExamCreateDto examCreateDto);
+    List<ExamModel> getAll();
 
     // question and answers useCase
     QuestionModel saveQuestion(QuestionModel questionModel);

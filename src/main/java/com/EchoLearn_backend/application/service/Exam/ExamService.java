@@ -13,6 +13,7 @@ import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntit
 import com.EchoLearn_backend.infraestructure.adapter.mapper.ExamMapper;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.QuestionCreateExamDto;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,27 +45,26 @@ public class ExamService implements ExamUseCase {
 
     @Override
     @Transactional
-    public void saveExam(ExamCreateDto examCreateDto) {
+    public ExamModel saveExam(@Valid ExamCreateDto examCreateDto) {
 
         try {
             // the first step are create a single exam (without relationship question) and create the relationship with subcategories
             ExamModel examModelInitial = this.examMapper.dtoToModel(examCreateDto);
             ExamModel examSave = this.examPersistencePort.save(examModelInitial);
 
-            // create all necesary logic when we want to create an exam single
-            // have already an exam created, we're going to save the answers and question
+            // cretae the question with answer and validate if isCorrect no repeact
             this.saveQuestionAndAnswers(examCreateDto, examSave.getId_exam());
-            // lo que falta : crear logica en el metoo de save question and answers, for one of them answer have to be correct and thta logic. boru.
 
-            // save the exam with what questions
-
-            // create logic of validation for entities that goes here
-
-
+            return examSave;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public List<ExamModel> getAll() {
+        return this.examPersistencePort.getAll();
     }
 
     @Override
@@ -78,7 +78,8 @@ public class ExamService implements ExamUseCase {
     }
 
 
-    public List<QuestionModel> saveQuestionAndAnswers(ExamCreateDto examCreateDto, Long id_exam) {
+    @Transactional
+    public List<QuestionModel> saveQuestionAndAnswers(@Valid ExamCreateDto examCreateDto, @Valid Long id_exam) {
         try {
             List<QuestionCreateExamDto> questionCreateExamDto = examCreateDto.getQuestions();
 
@@ -104,8 +105,10 @@ public class ExamService implements ExamUseCase {
                                     answerModel.setId_question(questionModelSaved.getId_question());
                                     return this.saveAnswer(answerModel);
                                 })).toList();
-
-
+                        int counterAnswersCorrects = (int) answerModelList.stream().filter(AnswerModel::getIsCorrect).limit(2).count();
+                        if(counterAnswersCorrects >= 2){
+                            throw new IllegalArgumentException("Not can to be more than 2 answers corrects.");
+                        }
 
                         return questionModelSaved;
                     }).toList();

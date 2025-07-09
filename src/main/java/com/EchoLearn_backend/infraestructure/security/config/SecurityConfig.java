@@ -51,7 +51,9 @@ public class SecurityConfig {
                     request.requestMatchers("/api/subcategory/**").hasRole(roleAdmin);
 
                     // exam
-                    request.requestMatchers(HttpMethod.POST, "/api/exam/create").permitAll();
+                    request.requestMatchers(HttpMethod.POST, "/api/exam/create/**").hasAnyRole(roleAdmin);
+                    request.requestMatchers(HttpMethod.GET, "/api/exam/**").hasAnyRole(roleAdmin);
+                    request.requestMatchers(HttpMethod.GET, "/api/exam/getAll/home").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class);

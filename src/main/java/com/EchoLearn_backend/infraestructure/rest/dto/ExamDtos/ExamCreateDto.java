@@ -23,7 +23,7 @@ public class ExamCreateDto {
     private  Integer duration;
     @NotNull
     private Integer points;
-    @NotBlank
+    @NotNull
     private Boolean available;
 
     //list of question

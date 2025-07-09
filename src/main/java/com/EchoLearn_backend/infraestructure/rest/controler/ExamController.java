@@ -1,9 +1,14 @@
 package com.EchoLearn_backend.infraestructure.rest.controler;
 
 import com.EchoLearn_backend.application.usecases.ExamUseCase;
+import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
+import org.apache.http.protocol.HTTP;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/exam")
@@ -14,20 +19,26 @@ public class ExamController {
         this.examUseCase = examUseCase;
     }
 
-    // steps to create that functionally:
-
-    // 1. recirbir correctamente el dto. listo
-    // en el service de exam, crear un examen con atributos basips, ya uqe necesitos la clave primaria - listo / pero se necesita valdacion por falta de subcategorias
-    // con esa clave primaria o esa entidad creada de exam, podemos crear las otras ategorias de
     @PostMapping("/create")
-    public ResponseEntity<ExamCreateDto> createExam(@RequestBody ExamCreateDto examCreateDto) {
-        System.out.println("ni llega aca");
+    public ResponseEntity<?> createExam(@RequestBody ExamCreateDto examCreateDto) {
        try {
-           this.examUseCase.saveExam(examCreateDto);
+          return new ResponseEntity<>(HttpStatus.CREATED) ;
        } catch (Exception e) {
            e.printStackTrace();
-           throw new RuntimeException(e);
+          return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
        }
-        return ResponseEntity.ok(examCreateDto);
+
+    }
+
+
+    // GET METHODS
+    @GetMapping("/geAll")
+    public ResponseEntity<List<ExamModel>> getAll(){
+        return new ResponseEntity<>(this.examUseCase.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/getAll/home")
+    public ResponseEntity<List<ExamModel>> getAllExamForHome(){
+        return new ResponseEntity<>(this.examUseCase.getAll(), HttpStatus.OK);
     }
 }

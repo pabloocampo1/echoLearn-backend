@@ -52,4 +52,13 @@ public class ExamJpaAdapter implements ExamPersistencePort {
         List<SubCategoryExamEntity> subCategoryExamEntityList = examEntity.getSubCategories();
         return this.examMapper.entityToModel(examEntity, subCategoryExamEntityList);
     }
+
+    @Override
+    public List<ExamModel> getAll() {
+        List<ExamEntity> examEntityList = this.examRepositoryJpa.findAll();
+
+        return examEntityList.stream().map((exam) -> {
+            return this.examMapper.entityToModel(exam, exam.getSubCategories());
+        }).toList();
+    }
 }

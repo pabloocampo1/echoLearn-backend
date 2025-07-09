@@ -10,12 +10,20 @@ import com.EchoLearn_backend.infraestructure.adapter.entity.ExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntity;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class ExamMapper {
+    private final QuestionsMapper questionsMapper;
+
+    @Autowired
+    public ExamMapper(@Lazy QuestionsMapper questionsMapper) {
+        this.questionsMapper = questionsMapper;
+    }
 
     public ExamEntity modelToEntity(ExamModel examModel) {
 
@@ -48,6 +56,13 @@ public class ExamMapper {
         List<Integer> subCategoriesToModel = list
                 .stream().map(SubCategoryExamEntity::getId_subcategory).toList();
 
+        List<QuestionModel> question = examEntity.getQuestionsExamEntities() != null
+                ? examEntity.getQuestionsExamEntities()
+                .stream()
+                .map(this.questionsMapper::toModel)
+                .toList()
+                : new ArrayList<>();
+
         return ExamModel
                 .builder()
                 .id_exam(examEntity.getId_exam())
@@ -58,6 +73,7 @@ public class ExamMapper {
                 .title(examEntity.getTitle())
                 .description(examEntity.getDescription())
                 .subCategories(subCategoriesToModel)
+                .questions(question)
                 .build();
     }
 }
