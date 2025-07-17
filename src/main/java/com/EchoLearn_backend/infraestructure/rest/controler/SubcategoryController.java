@@ -50,6 +50,16 @@ public class SubcategoryController {
         }
     }
 
+    @GetMapping("/getByCategory/{id_category}")
+    public ResponseEntity<Page<SubCategory>> getSubcategoriesByCategory(
+            @PathVariable("id_category") Integer id_category,
+            @RequestParam( value = "page",defaultValue = "0") int page,
+            @RequestParam( value = "elements" ,defaultValue = "15") int elements
+    ){
+        Pageable pageableRequest = PageRequest.of(page, elements);
+        return new ResponseEntity<>(this.subCategoryUseCase.getByCategory(id_category, pageableRequest), HttpStatus.OK);
+    }
+
     @GetMapping("/findByTitle/{title}")
     public ResponseEntity<List<SubcategoryResponse>> findAllByTitle(@Valid @PathVariable("title") String title) {
         List<SubCategory> subCategoryList = this.subCategoryUseCase.getByTitle(title);

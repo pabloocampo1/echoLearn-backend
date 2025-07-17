@@ -49,7 +49,7 @@ public class SecurityConfig {
                     request.requestMatchers( "/api/category/**").hasRole(roleAdmin);
 
                     // subCategory
-                    request.requestMatchers("/api/subcategory/**").hasRole(roleAdmin);
+                    request.requestMatchers("/api/subcategory/**").hasAnyRole(roleAdmin, roleSuperAdmin);
 
                     // exam
                     request.requestMatchers(HttpMethod.POST, "/api/exam/create/**").hasAnyRole(roleAdmin);

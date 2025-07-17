@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.List;
 
 @Repository
@@ -122,11 +123,8 @@ public class SubCategoryJpaAdapter implements SubcategoryPersistencePort {
 
     @Override
     public Page<SubCategory> getByCategory(@Valid Category category, Pageable pageable) {
-      /*  CategoryExamEntity categoryExamEntity = this.categoryMapper.toDbo(category);
-        Page<SubCategoryExamEntity> entityPage = this.subcategoryRepository.findByAvailableTrueAndCategory(categoryExamEntity.getId_category(), pageable );
-        return entityPage.map(this.subcategoryDboMapper::toDomain) ;
-       */
-        return null;
+        Page<SubCategoryExamEntity> subCategoryExamEntities = this.subcategoryRepository.findAvailableByCategoryId(category.getId_category(), pageable);
+        return subCategoryExamEntities.map(this.subcategoryDboMapper::toDomain);
     }
 
     @Override

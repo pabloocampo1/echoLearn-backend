@@ -15,9 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 
 public interface SubcategoryRepository extends JpaRepository<SubCategoryExamEntity, Integer> {
-    //   @Query("select * from subcategory_exam from",nativeQuery = true )
-    //  Page<SubCategoryExamEntity> findByAvailableTrueAndCategory(@PathVariable("id") Integer id, Pageable pageable);
     List<SubCategoryExamEntity> findAllByTitleContainingIgnoreCase(String title);
+
+    @Query("""
+    SELECT s FROM SubCategoryExamEntity s
+    JOIN s.categories c
+    WHERE s.available = true AND c.id_category = :categoryId
+""")
+    Page<SubCategoryExamEntity> findAvailableByCategoryId(@Param("categoryId") Integer categoryId, Pageable pageable);
 
     @Transactional
     @Modifying
