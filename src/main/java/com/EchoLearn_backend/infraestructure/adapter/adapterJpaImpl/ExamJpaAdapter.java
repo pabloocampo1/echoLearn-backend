@@ -8,7 +8,9 @@ import com.EchoLearn_backend.infraestructure.adapter.entity.ExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.ExamMapper;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.SubcategoryDboMapper;
+import com.EchoLearn_backend.infraestructure.adapter.projection.ExamHomeProjection;
 import com.EchoLearn_backend.infraestructure.adapter.repository.ExamRepositoryJpa;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -59,6 +61,14 @@ public class ExamJpaAdapter implements ExamPersistencePort {
 
         return examEntityList.stream().map((exam) -> {
             return this.examMapper.entityToModel(exam, exam.getSubCategories());
+        }).toList();
+    }
+
+    @Override
+    public List<ExamHomeDto> getAllExamForHome() {
+        List<ExamHomeProjection> examHomeProjectionList = this.examRepositoryJpa.findAllExamForHome();
+         return examHomeProjectionList.stream().map((exam) -> {
+            return new ExamHomeDto(exam.getId_exam(), exam.getTitle(), exam.getDescription(), exam.getLevel(), exam.getDuration(), exam.getPoints());
         }).toList();
     }
 }

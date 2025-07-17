@@ -12,6 +12,7 @@ import com.EchoLearn_backend.domain.port.QuestionPersistencePort;
 import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.ExamMapper;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.QuestionCreateExamDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,11 @@ public class ExamService implements ExamUseCase {
     }
 
     @Override
+    public ExamModel getById( @Valid  Long id) {
+        return this.examPersistencePort.getById(id);
+    }
+
+    @Override
     @Transactional
     public ExamModel saveExam(@Valid ExamCreateDto examCreateDto) {
 
@@ -65,6 +71,11 @@ public class ExamService implements ExamUseCase {
     @Override
     public List<ExamModel> getAll() {
         return this.examPersistencePort.getAll();
+    }
+
+    @Override
+    public List<ExamHomeDto> getAllExamForHome() {
+        return this.examPersistencePort.getAllExamForHome();
     }
 
     @Override

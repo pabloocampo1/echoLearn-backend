@@ -143,8 +143,8 @@ public class SubcategoryController {
      }
 
      @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteSubCategory(@PathVariable("id") Integer id) {
-         this.subCategoryUseCase.delete(id);
+    public ResponseEntity<?> deleteSubCategory(@PathVariable("id") @Valid Integer id) {
+        this.subCategoryUseCase.delete(id);
         return new ResponseEntity<>( HttpStatus.OK);
      }
 

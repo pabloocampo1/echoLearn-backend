@@ -2,6 +2,7 @@ package com.EchoLearn_backend.domain.port;
 
 import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.infraestructure.adapter.entity.CategoryExamEntity;
+import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryHomeDto;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface CategoryExamPersistencePort {
     Category findById(Integer id);
     List<Category> findByName(String name);
     Boolean existById(Integer id);
+    List<CategoryHomeDto> findAllCategoriesForHome();
 }

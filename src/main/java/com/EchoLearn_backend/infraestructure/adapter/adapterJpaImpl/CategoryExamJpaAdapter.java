@@ -4,8 +4,10 @@ import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.domain.port.CategoryExamPersistencePort;
 import com.EchoLearn_backend.infraestructure.adapter.entity.CategoryExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.CategoryMapper;
+import com.EchoLearn_backend.infraestructure.adapter.projection.CategoryHomeProjection;
 import com.EchoLearn_backend.infraestructure.adapter.repository.CategoryRepository;
 
+import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryHomeDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -85,6 +87,26 @@ public class CategoryExamJpaAdapter  implements CategoryExamPersistencePort {
     @Override
     public Boolean existById(Integer id) {
         return this.categoryRepository.existsById(id);
+    }
+
+    @Override
+    public List<CategoryHomeDto> findAllCategoriesForHome() {
+        List<CategoryHomeProjection> homeProjectionList = this.categoryRepository.findAllProjectionsByHome();
+
+        return homeProjectionList.stream().map(
+                categoryHomeProjection -> {
+                    return CategoryHomeDto
+                            .builder()
+                            .id(categoryHomeProjection.getId())
+                            .title(categoryHomeProjection.getTitle())
+                            .description(categoryHomeProjection.getDescription())
+                            .available(categoryHomeProjection.getAvailable())
+                            .createDate(categoryHomeProjection.getCreateDate())
+                            .imageUrl(categoryHomeProjection.getImageUrl())
+                            .totalSubcategories(categoryHomeProjection.getTotalSubcategories())
+                            .build();
+                }
+        ).toList();
     }
 
 }

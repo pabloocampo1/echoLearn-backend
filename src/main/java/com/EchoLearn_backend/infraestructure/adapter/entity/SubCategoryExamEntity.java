@@ -44,7 +44,6 @@ public class SubCategoryExamEntity {
     private List<CategoryExamEntity> categories;
 
     @ManyToMany(mappedBy = "subCategories", fetch = FetchType.LAZY)
-
     private List<ExamEntity> exams;
 
 

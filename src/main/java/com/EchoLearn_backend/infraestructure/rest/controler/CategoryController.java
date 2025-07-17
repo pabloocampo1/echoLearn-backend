@@ -7,6 +7,7 @@ import com.EchoLearn_backend.application.usecases.CategoryUseCase.CategoryUseCas
 import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.CategoryMapper;
 import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryHomeDto;
 import com.cloudinary.Cloudinary;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,13 @@ public class CategoryController {
                 , HttpStatus.OK);
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<List<CategoryHomeDto>> getAllAvailableForHome() {
+        return new ResponseEntity<>(
+               this.useCase.getAllCategoriesAvailableForHome()
+                , HttpStatus.OK);
+    }
+
     @GetMapping("/findByName/{name}")
     public ResponseEntity<List<CategoryDto>> getByName(@PathVariable("name") String name) {
         return new ResponseEntity<>(
@@ -94,20 +102,30 @@ public class CategoryController {
     ) {
         String imageUrl = null;
         try {
+            CategoryDto category;
             if(image != null){
                 imageUrl = this.cloudinaryService.uploadImage(image);
+                category = CategoryDto
+                        .builder()
+                        .id(id)
+                        .title(title)
+                        .description(description)
+                        .available(available)
+                        .imageUrl(imageUrl)
+                        .build();
+            }else {
+                category = CategoryDto
+                        .builder()
+                        .id(id)
+                        .title(title)
+                        .description(description)
+                        .available(available)
+                        .build();
             }
-            CategoryDto dto = CategoryDto
-                    .builder()
-                    .id(id)
-                    .title(title)
-                    .description(description)
-                    .available(available)
-                    .imageUrl(imageUrl)
-                    .build();
+
 
             return new ResponseEntity<>(
-                    this.categoryMapper.toResponse(this.useCase.save(this.categoryMapperApplication.toDomain(dto))
+                    this.categoryMapper.toResponse(this.useCase.save(this.categoryMapperApplication.toDomain(category))
                     ), HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

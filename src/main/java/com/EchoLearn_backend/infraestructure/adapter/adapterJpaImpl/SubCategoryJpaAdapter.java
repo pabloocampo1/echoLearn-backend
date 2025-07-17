@@ -92,12 +92,17 @@ public class SubCategoryJpaAdapter implements SubcategoryPersistencePort {
         SubCategoryExamEntity subCategoryExam = this.subcategoryRepository.findById(id)
                 .orElseThrow( () -> new IllegalArgumentException( "Subcategory not  exists."));
 
+
+        // delete relation with category if there are
         for (CategoryExamEntity categoryExam : subCategoryExam.getCategories()) {
             categoryExam.getSubcategories().remove(subCategoryExam);
             this.categoryRepository.save(categoryExam);
         }
         subCategoryExam.getCategories().clear();
 
+
+        // delete relation with exam if there are
+        this.subcategoryRepository.deleteRelationshipsWithExams(id);
         this.subcategoryRepository.deleteById(id);
     }
 

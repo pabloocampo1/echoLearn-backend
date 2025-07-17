@@ -5,6 +5,7 @@ import com.EchoLearn_backend.application.usecases.CategoryUseCase.CategoryUseCas
 import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.domain.port.CategoryExamPersistencePort;
 import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.category.CategoryHomeDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +76,11 @@ public class CategoryExamService implements CategoryUseCase {
     @Override
     public List<Category> findByName(String name) {
         return this.categoryExamPersistencePort.findByName(name);
+    }
+
+    @Override
+    public List<CategoryHomeDto> getAllCategoriesAvailableForHome() {
+        return this.categoryExamPersistencePort.findAllCategoriesForHome();
     }
 
 }
