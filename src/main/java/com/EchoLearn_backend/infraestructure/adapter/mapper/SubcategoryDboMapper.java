@@ -1,6 +1,7 @@
 package com.EchoLearn_backend.infraestructure.adapter.mapper;
 
 import com.EchoLearn_backend.domain.model.SubCategory;
+import com.EchoLearn_backend.domain.model.TopicExam;
 import com.EchoLearn_backend.domain.port.CategoryExamPersistencePort;
 import com.EchoLearn_backend.infraestructure.adapter.entity.CategoryExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntity;
@@ -15,10 +16,13 @@ import java.util.List;
 public class SubcategoryDboMapper {
     @Autowired
     private CategoryExamPersistencePort categoryExamPersistencePort;
+    @Autowired
+    private ExamMapper examMapper;
 
     public SubCategory toDomain(SubCategoryExamEntity subCategoryExamEntity){
         List<Integer> ids = subCategoryExamEntity.getCategories()
                 .stream().map(CategoryExamEntity::getId_category).toList();
+
         return SubCategory.
                 builder()
                 .id_subcategory(subCategoryExamEntity.getId_subcategory())

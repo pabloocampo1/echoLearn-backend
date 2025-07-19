@@ -28,8 +28,6 @@ public class SubCategory {
 
     private LocalDateTime createDate;
 
-    private List<TopicExam> topicExams;
-
     private String image;
 
 }
