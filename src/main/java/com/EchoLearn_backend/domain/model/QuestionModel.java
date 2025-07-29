@@ -17,5 +17,6 @@ public class QuestionModel {
     private Integer exam_id;
     private String question;
     private Boolean available;
+    private String type;
     private List<AnswerModel> answerModels;
 }

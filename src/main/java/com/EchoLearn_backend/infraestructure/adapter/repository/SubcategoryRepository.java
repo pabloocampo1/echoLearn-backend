@@ -24,6 +24,8 @@ public interface SubcategoryRepository extends JpaRepository<SubCategoryExamEnti
 """)
     Page<SubCategoryExamEntity> findAvailableByCategoryId(@Param("categoryId") Integer categoryId, Pageable pageable);
 
+    List<SubCategoryExamEntity> findAllByAvailableTrue();
+
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM exam_subcategory WHERE id_subcategory = :id", nativeQuery = true)

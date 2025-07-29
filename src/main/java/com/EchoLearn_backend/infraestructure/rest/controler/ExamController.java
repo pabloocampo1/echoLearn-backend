@@ -1,5 +1,6 @@
 package com.EchoLearn_backend.infraestructure.rest.controler;
 
+import com.EchoLearn_backend.Exception.BadRequestException;
 import com.EchoLearn_backend.application.usecases.ExamUseCase;
 import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
@@ -22,21 +23,27 @@ public class ExamController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createExam(@RequestBody ExamCreateDto examCreateDto) {
-       try {
-          return new ResponseEntity<>(HttpStatus.CREATED) ;
-       } catch (Exception e) {
+    public ResponseEntity<ExamModel> createExam(@RequestBody ExamCreateDto examCreateDto) {
+
+      try {
+          return new ResponseEntity<>(this.examUseCase.saveExam(examCreateDto),HttpStatus.CREATED) ;
+       }catch (BadRequestException e) {
+          throw e;
+      }  catch (Exception e) {
            e.printStackTrace();
           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
        }
-
     }
 
 
-    // GET METHODS
-    @GetMapping("/geAll")
+    @GetMapping("/getAll")
     public ResponseEntity<List<ExamModel>> getAll(){
-        return new ResponseEntity<>(this.examUseCase.getAll(), HttpStatus.OK);
+       try{
+           return new ResponseEntity<>(this.examUseCase.getAll(), HttpStatus.OK);
+       }catch (Exception e) {
+           e.printStackTrace();
+           throw new RuntimeException(e);
+       }
     }
 
     @GetMapping("/getAll/home")
@@ -53,4 +60,6 @@ public class ExamController {
           throw new RuntimeException(e);
       }
     }
+
+
 }

@@ -37,6 +37,7 @@ public class QuestionsMapper {
                 .id_question(questionsExamEntity.getId_question())
                 .question(questionsExamEntity.getQuestion())
                 .available(questionsExamEntity.getAvailable())
+                .type(questionsExamEntity.getType())
                 .answerModels(answerModels)
                 .exam_id(questionsExamEntity.getExam().getId_exam().intValue())
                 .build();
@@ -59,6 +60,7 @@ public class QuestionsMapper {
                 .exam(examEntity)
                 .question(questionModel.getQuestion())
                 .available(questionModel.getAvailable())
+                .type(questionModel.getType())
                 .answers(answerExamEntityList)
                 .build();
     }

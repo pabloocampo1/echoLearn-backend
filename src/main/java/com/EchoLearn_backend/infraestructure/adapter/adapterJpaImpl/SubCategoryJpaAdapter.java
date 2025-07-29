@@ -1,5 +1,6 @@
 package com.EchoLearn_backend.infraestructure.adapter.adapterJpaImpl;
 
+import com.EchoLearn_backend.Exception.ResourceNotFoundException;
 import com.EchoLearn_backend.domain.model.Category;
 import com.EchoLearn_backend.domain.model.SubCategory;
 import com.EchoLearn_backend.domain.port.SubcategoryPersistencePort;
@@ -40,7 +41,7 @@ public class SubCategoryJpaAdapter implements SubcategoryPersistencePort {
     @Override
     public SubCategory getById(@Valid Integer id) {
         SubCategoryExamEntity subCategory = this.subcategoryRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("the sub category with that id, no exist. " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("the sub category with that id, no exist. " + id));
         return this.subcategoryDboMapper.toDomain(subCategory);
     }
 
@@ -112,6 +113,12 @@ public class SubCategoryJpaAdapter implements SubcategoryPersistencePort {
 
         Page<SubCategoryExamEntity> entityPage = this.subcategoryRepository.findAll(pageable);
         return entityPage.map(this.subcategoryDboMapper::toDomain);
+    }
+
+    @Override
+    public List<SubCategory> getAllList() {
+        List<SubCategoryExamEntity> subCategoryExamEntityList = this.subcategoryRepository.findAllByAvailableTrue();
+        return subCategoryExamEntityList.stream().map(this.subcategoryDboMapper::toDomain).toList() ;
     }
 
 

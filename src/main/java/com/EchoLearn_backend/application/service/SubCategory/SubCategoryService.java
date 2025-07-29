@@ -97,6 +97,11 @@ public class SubCategoryService implements SubCategoryUseCase {
     }
 
     @Override
+    public List<SubCategory> getAllSubcategoriesList() {
+        return this.subcategoryPersistencePort.getAllList();
+    }
+
+    @Override
     public List<Integer> existAllById(List<Integer> ids) {
 
         return this.subcategoryPersistencePort.existAllById(ids) ;

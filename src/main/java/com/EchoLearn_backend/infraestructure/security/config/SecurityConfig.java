@@ -53,7 +53,7 @@ public class SecurityConfig {
                     request.requestMatchers("/api/subcategory/**").hasAnyRole(roleAdmin, roleSuperAdmin);
 
                     // exam
-                    request.requestMatchers(HttpMethod.POST, "/api/exam/create/**").hasAnyRole(roleAdmin);
+                    request.requestMatchers(HttpMethod.POST, "/api/exam/create/**").hasAnyRole( roleSuperAdmin ,roleAdmin);
                     request.requestMatchers(HttpMethod.GET, "/api/exam/getAll/home").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/api/exam/**").hasAnyRole(roleAdmin, roleSuperAdmin);
 

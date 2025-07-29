@@ -16,4 +16,5 @@ public class ExamHomeDto {
     private String level;
     private Integer duration;
     private Integer points;
+    private Integer totalQuestion;
 }

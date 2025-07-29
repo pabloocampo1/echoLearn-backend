@@ -32,6 +32,9 @@ public class QuestionsExamEntity {
     @Column(nullable = false)
     private Boolean available;
 
+    @Column(nullable = false)
+    private String type;
+
     @CreatedDate
     private LocalDateTime createDate;
 

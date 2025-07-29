@@ -1,5 +1,6 @@
 package com.EchoLearn_backend.infraestructure.adapter.adapterJpaImpl;
 
+import com.EchoLearn_backend.Exception.BadRequestException;
 import com.EchoLearn_backend.application.usecases.SubCategoryUseCase.SubCategoryUseCase;
 import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.domain.model.SubCategory;
@@ -37,7 +38,7 @@ public class ExamJpaAdapter implements ExamPersistencePort {
         List<SubCategoryExamEntity> subCategoryExamEntityList = subCategories.stream().map(this.subcategoryDboMapper::toDbo).toList();
         for (SubCategoryExamEntity s : subCategoryExamEntityList) {
             if (s.getId_subcategory() == null) {
-                throw new IllegalStateException("SubCategory sin ID");
+                throw new BadRequestException("SubCategory not valid");
             }
         }
 
@@ -68,7 +69,7 @@ public class ExamJpaAdapter implements ExamPersistencePort {
     public List<ExamHomeDto> getAllExamForHome() {
         List<ExamHomeProjection> examHomeProjectionList = this.examRepositoryJpa.findAllExamForHome();
          return examHomeProjectionList.stream().map((exam) -> {
-            return new ExamHomeDto(exam.getId_exam(), exam.getTitle(), exam.getDescription(), exam.getLevel(), exam.getDuration(), exam.getPoints());
+            return new ExamHomeDto(exam.getId_exam(), exam.getTitle(), exam.getDescription(), exam.getLevel(), exam.getDuration(), exam.getPoints(), exam.getTotalQuestion());
         }).toList();
     }
 }

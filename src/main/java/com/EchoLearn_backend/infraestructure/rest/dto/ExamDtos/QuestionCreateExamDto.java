@@ -17,6 +17,10 @@ public class QuestionCreateExamDto {
     private String question;
     @NotNull
     private Boolean available;
+
+    @NotBlank
+    private String type;
+
     //  answers list
     private List<AnswersCreateExamDto> answers;
 }

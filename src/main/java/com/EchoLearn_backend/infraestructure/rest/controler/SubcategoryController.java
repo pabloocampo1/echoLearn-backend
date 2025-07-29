@@ -1,5 +1,6 @@
 package com.EchoLearn_backend.infraestructure.rest.controler;
 
+import com.EchoLearn_backend.Exception.ResourceNotFoundException;
 import com.EchoLearn_backend.application.mapper.SubcategoryMapper;
 import com.EchoLearn_backend.application.service.CloudinaryService;
 import com.EchoLearn_backend.application.usecases.SubCategoryUseCase.SubCategoryUseCase;
@@ -34,6 +35,19 @@ public class SubcategoryController {
         this.cloudinaryService = cloudinaryService;
     }
 
+    @GetMapping(path = "/getById/{id}")
+    public ResponseEntity<SubcategoryResponse> getById(@PathVariable("id") Integer id){
+            return new ResponseEntity<>(this.subcategoryMapper.toResponse(this.subCategoryUseCase.findById(id)), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getSubcategoriesList")
+    public ResponseEntity<List<SubcategoryResponse>> getSubcategoriesList(){
+        List<SubcategoryResponse> list = this.subCategoryUseCase.getAllSubcategoriesList()
+                .stream().map(this.subcategoryMapper::toResponse).toList();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+
     @GetMapping("/getAll")
     public ResponseEntity<Page<SubcategoryResponse>> getAll(
             @RequestParam(defaultValue = "0") int page,
@@ -45,7 +59,6 @@ public class SubcategoryController {
                     categories.map(this.subcategoryMapper::toResponse),HttpStatus.OK
             );
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -157,6 +170,14 @@ public class SubcategoryController {
         this.subCategoryUseCase.delete(id);
         return new ResponseEntity<>( HttpStatus.OK);
      }
+
+
+
+
+
+
+
+
 
 
 

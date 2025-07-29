@@ -16,6 +16,7 @@ public interface SubcategoryPersistencePort {
     SubCategory save(SubCategory subCategory);
     void delete(Integer id);
     Page<SubCategory> getAll(Pageable pageable);
+    List<SubCategory> getAllList();
     Page<SubCategory> getAllAvailable(Pageable pageable);
     Page<SubCategory> getByCategory(Category category, Pageable pageable);
     List<SubCategory> getByTitle(String title);

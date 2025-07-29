@@ -16,11 +16,17 @@ public interface ExamRepositoryJpa  extends JpaRepository<ExamEntity, Long> {
                 e.description AS description,
                 e.level AS level,
                 e.duration AS duration,
-                e.points AS points
+                e.points AS points,
+                ( SELECT COUNT(*)
+                 FROM question_exam q
+                 WHERE q.id_exam = e.id_exam
+                 ) AS totalQuestion
             FROM exam_entity e
             WHERE e.available = TRUE
             ORDER BY e.points DESC;
             
             """, nativeQuery = true)
     List<ExamHomeProjection>  findAllExamForHome();
+
+
 }

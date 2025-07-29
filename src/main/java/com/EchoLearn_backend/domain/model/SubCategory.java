@@ -27,7 +27,6 @@ public class SubCategory {
     private List<Integer> categories;
 
     private LocalDateTime createDate;
-
     private String image;
 
 }

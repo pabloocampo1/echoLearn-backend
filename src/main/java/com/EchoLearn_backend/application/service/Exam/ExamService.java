@@ -1,19 +1,15 @@
 package com.EchoLearn_backend.application.service.Exam;
 
+import com.EchoLearn_backend.Exception.BadRequestException;
 import com.EchoLearn_backend.application.usecases.ExamUseCase;
-import com.EchoLearn_backend.application.usecases.SubCategoryUseCase.SubCategoryUseCase;
 import com.EchoLearn_backend.domain.model.AnswerModel;
 import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.domain.model.QuestionModel;
-import com.EchoLearn_backend.domain.model.SubCategory;
 import com.EchoLearn_backend.domain.port.AnswerPersistencePort;
 import com.EchoLearn_backend.domain.port.ExamPersistencePort;
 import com.EchoLearn_backend.domain.port.QuestionPersistencePort;
-import com.EchoLearn_backend.infraestructure.adapter.entity.SubCategoryExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.ExamMapper;
-import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
-import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
-import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.QuestionCreateExamDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,9 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ExamService implements ExamUseCase {
+
+    // Create the levels as a variable in the service for validate
+    private final Integer pointsLevelEasy = 300;
+    private final Integer pointsLevelIntermediate = 500;
+    private final Integer  pointsLevelHard = 900;
 
     private final ExamPersistencePort examPersistencePort;
     private final QuestionPersistencePort questionPersistencePort;
@@ -54,6 +56,8 @@ public class ExamService implements ExamUseCase {
     public ExamModel saveExam(@Valid ExamCreateDto examCreateDto) {
 
         try {
+            this.validateDataBasic(examCreateDto);
+
             // the first step are create a single exam (without relationship question) and create the relationship with subcategories
             ExamModel examModelInitial = this.examMapper.dtoToModel(examCreateDto);
             ExamModel examSave = this.examPersistencePort.save(examModelInitial);
@@ -62,6 +66,8 @@ public class ExamService implements ExamUseCase {
             this.saveQuestionAndAnswers(examCreateDto, examSave.getId_exam());
 
             return examSave;
+        }catch (BadRequestException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -79,6 +85,11 @@ public class ExamService implements ExamUseCase {
     }
 
     @Override
+    public ExamResult evaluateExamResult(ExamResultRequest examResultRequest) {
+        return null;
+    }
+
+    @Override
     public QuestionModel saveQuestion(QuestionModel questionModel) {
         return this.questionPersistencePort.save(questionModel);
     }
@@ -91,22 +102,22 @@ public class ExamService implements ExamUseCase {
 
     @Transactional
     public List<QuestionModel> saveQuestionAndAnswers(@Valid ExamCreateDto examCreateDto, @Valid Long id_exam) {
-        try {
+
             List<QuestionCreateExamDto> questionCreateExamDto = examCreateDto.getQuestions();
 
-            // commentary
             List<QuestionModel> questionModelList = questionCreateExamDto
                     .stream().
                     map((question) -> {
                         QuestionModel questionModel = new QuestionModel();
                         questionModel.setAvailable(question.getAvailable());
                         questionModel.setQuestion(question.getQuestion());
+                        questionModel.setType(question.getType());
                         questionModel.setExam_id(id_exam.intValue());
                         questionModel.setAnswerModels(new ArrayList<>());
-                        System.out.println("question after to save:  " + questionModel);
                         // commentary
                         QuestionModel questionModelSaved = this.saveQuestion(questionModel);
-                        System.out.println("question before to save:  " + questionModelSaved);
+
+
                         List<AnswerModel> answerModelList = question.getAnswers()
                                 .stream()
                                 .map((answer -> {
@@ -118,7 +129,7 @@ public class ExamService implements ExamUseCase {
                                 })).toList();
                         int counterAnswersCorrects = (int) answerModelList.stream().filter(AnswerModel::getIsCorrect).limit(2).count();
                         if(counterAnswersCorrects >= 2){
-                            throw new IllegalArgumentException("Not can to be more than 2 answers corrects.");
+                            throw new BadRequestException("Not can to be more than 2 answers corrects in one question.");
                         }
 
                         return questionModelSaved;
@@ -126,8 +137,30 @@ public class ExamService implements ExamUseCase {
 
 
             return questionModelList;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+
+    }
+
+    public void validateDataBasic(ExamCreateDto examCreateDto) {
+        // validate the points
+        if(examCreateDto.getPoints() >= 2000) {
+            throw new BadRequestException("You don't can add more than 2000 points in an exam.");
         }
+
+        // validate the duration
+        if(examCreateDto.getDuration() >= 60) {
+            throw new BadRequestException("You don't can add more than 60 minutes of duration in an exam.");
+        }
+
+        // Validate if there are one question with one question correct
+        examCreateDto.getQuestions().forEach((question -> {
+            AtomicInteger answerWithoutOneOptionCorrectCounter = new AtomicInteger(0);
+            question.getAnswers().forEach(answer -> {
+                if (!answer.getIsCorrect()) answerWithoutOneOptionCorrectCounter.set(answerWithoutOneOptionCorrectCounter.get() + 1);
+            });
+
+            if(answerWithoutOneOptionCorrectCounter.get() == 0) {
+                throw new BadRequestException("You need one answer correct in the question : " + question.getQuestion());
+            }
+        }));
     }
 }
