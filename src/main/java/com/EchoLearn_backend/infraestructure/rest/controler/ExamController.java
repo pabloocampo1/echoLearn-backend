@@ -61,5 +61,10 @@ public class ExamController {
       }
     }
 
+    @GetMapping(path = "/getBySubcategory/{id_subcategory}")
+    public ResponseEntity<List<ExamHomeDto>> getAllBySubcategory(@PathVariable("id_subcategory") @Valid Integer id) {
+        return new ResponseEntity<>(this.examUseCase.getAllExamBySubcategory(id), HttpStatus.OK);
+    }
+
 
 }

@@ -16,6 +16,7 @@ public interface ExamUseCase {
     ExamModel saveExam(ExamCreateDto examCreateDto);
     List<ExamModel> getAll();
     List<ExamHomeDto> getAllExamForHome();
+    List<ExamHomeDto> getAllExamBySubcategory(Integer id);
     ExamResult evaluateExamResult(ExamResultRequest examResultRequest);
     // question and answers useCase
     QuestionModel saveQuestion(QuestionModel questionModel);

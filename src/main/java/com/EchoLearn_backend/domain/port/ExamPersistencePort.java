@@ -10,4 +10,5 @@ public interface ExamPersistencePort {
     ExamModel getById(Long id);
     List<ExamModel> getAll();
     List<ExamHomeDto> getAllExamForHome();
+    List<ExamHomeDto> findAllBySubcategory(Integer id);
 }

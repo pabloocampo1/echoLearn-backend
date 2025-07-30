@@ -72,4 +72,11 @@ public class ExamJpaAdapter implements ExamPersistencePort {
             return new ExamHomeDto(exam.getId_exam(), exam.getTitle(), exam.getDescription(), exam.getLevel(), exam.getDuration(), exam.getPoints(), exam.getTotalQuestion());
         }).toList();
     }
+
+    @Override
+    public List<ExamHomeDto> findAllBySubcategory(Integer id) {
+        return this.examRepositoryJpa.findAllBySubcategory(id)
+                .stream()
+                .map(exam -> new ExamHomeDto(exam.getId_exam(), exam.getTitle(), exam.getDescription(), exam.getLevel(), exam.getDuration(), exam.getPoints(), exam.getTotalQuestion())).toList();
+    }
 }

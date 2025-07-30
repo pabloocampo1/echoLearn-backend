@@ -85,6 +85,11 @@ public class ExamService implements ExamUseCase {
     }
 
     @Override
+    public List<ExamHomeDto> getAllExamBySubcategory(@Valid Integer id) {
+        return this.examPersistencePort.findAllBySubcategory(id);
+    }
+
+    @Override
     public ExamResult evaluateExamResult(ExamResultRequest examResultRequest) {
         return null;
     }
