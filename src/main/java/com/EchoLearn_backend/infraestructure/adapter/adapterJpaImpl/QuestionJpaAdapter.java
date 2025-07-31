@@ -8,6 +8,8 @@ import com.EchoLearn_backend.infraestructure.adapter.repository.QuestionReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class QuestionJpaAdapter implements QuestionPersistencePort {
     private final QuestionRepository questionRepository;
@@ -34,5 +36,10 @@ public class QuestionJpaAdapter implements QuestionPersistencePort {
                 .orElseThrow();
 
         return this.questionsMapper.toModel(questionsExamEntity);
+    }
+
+    @Override
+    public List<QuestionModel> findAllByExamId(Long id) {
+        return this.questionRepository.findAllByExamId(id).stream().map(this.questionsMapper::toModel).toList();
     }
 }

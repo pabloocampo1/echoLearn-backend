@@ -8,6 +8,7 @@ import com.EchoLearn_backend.domain.model.QuestionModel;
 import com.EchoLearn_backend.domain.port.AnswerPersistencePort;
 import com.EchoLearn_backend.domain.port.ExamPersistencePort;
 import com.EchoLearn_backend.domain.port.QuestionPersistencePort;
+import com.EchoLearn_backend.infraestructure.adapter.entity.QuestionsExamEntity;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.ExamMapper;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.*;
 import jakarta.validation.Valid;
@@ -48,7 +49,10 @@ public class ExamService implements ExamUseCase {
 
     @Override
     public ExamModel getById( @Valid  Long id) {
-        return this.examPersistencePort.getById(id);
+        ExamModel exam = this.examPersistencePort.getById(id);
+        Long exam_id = exam.getId_exam();
+        exam.setQuestions(this.getAllQuestionByExamId(exam_id));
+        return exam;
     }
 
     @Override
@@ -102,6 +106,11 @@ public class ExamService implements ExamUseCase {
     @Override
     public AnswerModel saveAnswer(AnswerModel answerModel) {
         return this.answerPersistencePort.save(answerModel);
+    }
+
+    @Override
+    public List<QuestionModel> getAllQuestionByExamId(Long id) {
+        return this.questionPersistencePort.findAllByExamId(id);
     }
 
 
