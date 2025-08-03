@@ -49,4 +49,9 @@ public class UserManagmentService implements UserUseCases {
     public List<User> getAll() {
         return this.userPersistencePort.getAll();
     }
+
+    @Override
+    public User getById(Integer id) {
+        return this.userPersistencePort.getById(id);
+    }
 }

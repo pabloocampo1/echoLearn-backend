@@ -17,6 +17,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 public class ExamEntity {
@@ -64,6 +65,9 @@ public class ExamEntity {
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
    // @JsonIgnore
-    List<QuestionsExamEntity> questionsExamEntities ;
+   private List<QuestionsExamEntity> questionsExamEntities ;
+
+    @OneToMany(mappedBy = "examEntity")
+    private List<ApprovedExam> approvedExamList;
 }
 

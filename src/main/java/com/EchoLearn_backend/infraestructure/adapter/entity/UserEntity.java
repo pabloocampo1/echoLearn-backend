@@ -3,20 +3,20 @@ package com.EchoLearn_backend.infraestructure.adapter.entity;
 
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
-@Data
+@Setter
+@Getter
 @EntityListeners(AuditingEntityListener.class)
 @Builder
 @NoArgsConstructor
@@ -51,6 +51,10 @@ public class UserEntity {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_profile", referencedColumnName = "id_profile")
     private ProfileEntity profile;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<ApprovedExam> examsApproved;
 
 
 }

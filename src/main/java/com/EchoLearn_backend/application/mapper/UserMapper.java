@@ -19,8 +19,10 @@ public class UserMapper {
     public UserResponse userToResponse(User user){
         return UserResponse
                 .builder()
+                .user_id(user.getUser_id())
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .profile_id(user.getProfile_id())
                 .photo(user.getPhoto())
                 .build();
     }

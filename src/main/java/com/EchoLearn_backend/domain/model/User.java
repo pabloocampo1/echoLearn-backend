@@ -7,6 +7,9 @@ import lombok.Data;
 @Data
 @Builder
 public class User {
+
+    private Integer user_id;
+
     @NotBlank
     private String username;
     @NotBlank
@@ -15,4 +18,6 @@ public class User {
     private String email;
 
     private String photo;
+
+    private Integer profile_id;
 }

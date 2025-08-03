@@ -23,13 +23,24 @@ public class ProfileEntity {
     @JsonIgnore
     private UserEntity user;
 
-    private Integer points;
+    private String name;
 
-    private Integer num_exams_takes;
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer points = 0;
 
-    private Integer wins;
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer num_exams_takes = 0;
 
-    private Integer  failed;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer wins = 0;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private Integer failed = 0;
 
     @Column(nullable = false)
     private Boolean available;

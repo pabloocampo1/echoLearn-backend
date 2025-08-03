@@ -5,12 +5,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.EchoLearn_backend.infraestructure.adapter.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Table(name = "role")
-@Data
+@Setter
+@Getter
 public class RoleEntity {
 
     @Id

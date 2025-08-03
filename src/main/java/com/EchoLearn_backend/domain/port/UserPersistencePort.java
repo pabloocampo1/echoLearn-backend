@@ -9,6 +9,7 @@ public interface UserPersistencePort {
     User save(User user);
     Boolean existByEmail(String email);
     User findByEmail(String email);
+    User getById(Integer user_id);
     List<User> getAll();
 
 }

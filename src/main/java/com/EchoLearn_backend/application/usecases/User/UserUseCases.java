@@ -10,4 +10,6 @@ import java.util.List;
 public interface UserUseCases {
     UserResponse save(UserDto user);
     List<User> getAll();
+    User getById(Integer id);
+
 }

@@ -54,6 +54,7 @@ public class SecurityConfig {
 
                     // exam
                     request.requestMatchers(HttpMethod.POST, "/api/exam/create/**").hasAnyRole( roleSuperAdmin ,roleAdmin);
+                    request.requestMatchers(HttpMethod.POST, "/api/exam/check/**").hasAnyRole(roleUser);
                     request.requestMatchers(HttpMethod.GET, "/api/exam/getAll/home").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/api/exam/getBySubcategory/**").permitAll();
                     request.requestMatchers(HttpMethod.GET, "/api/exam/**").hasAnyRole(roleAdmin, roleSuperAdmin);

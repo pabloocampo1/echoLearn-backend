@@ -1,45 +1,63 @@
 package com.EchoLearn_backend.application.service.Exam;
 
 import com.EchoLearn_backend.Exception.BadRequestException;
+
+
+
 import com.EchoLearn_backend.application.usecases.ExamUseCase;
-import com.EchoLearn_backend.domain.model.AnswerModel;
-import com.EchoLearn_backend.domain.model.ExamModel;
-import com.EchoLearn_backend.domain.model.QuestionModel;
+import com.EchoLearn_backend.application.usecases.User.UserUseCases;
+import com.EchoLearn_backend.domain.model.*;
 import com.EchoLearn_backend.domain.port.AnswerPersistencePort;
+import com.EchoLearn_backend.domain.port.ApprovedExamPersistencePort;
 import com.EchoLearn_backend.domain.port.ExamPersistencePort;
 import com.EchoLearn_backend.domain.port.QuestionPersistencePort;
-import com.EchoLearn_backend.infraestructure.adapter.entity.QuestionsExamEntity;
+import com.EchoLearn_backend.infraestructure.adapter.adapterJpaImpl.ProfileJpaAdapter;
+import com.EchoLearn_backend.infraestructure.adapter.entity.ApprovedExam;
+import com.EchoLearn_backend.infraestructure.adapter.entity.ProfileEntity;
 import com.EchoLearn_backend.infraestructure.adapter.mapper.ExamMapper;
+import com.EchoLearn_backend.infraestructure.adapter.mapper.UserDboMapper;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.*;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ExamService implements ExamUseCase {
 
     // Create the levels as a variable in the service for validate
-    private final Integer pointsLevelEasy = 300;
-    private final Integer pointsLevelIntermediate = 500;
-    private final Integer  pointsLevelHard = 900;
+    private final Integer extraPoints = 300;
+
 
     private final ExamPersistencePort examPersistencePort;
     private final QuestionPersistencePort questionPersistencePort;
     private final AnswerPersistencePort answerPersistencePort;
     private final ExamMapper examMapper;
+    private final UserUseCases userUseCases;
+    private final UserDboMapper userDboMapper;
+    private final ProfileJpaAdapter profileJpaAdapter;
+    private final ApprovedExamPersistencePort approvedExamPersistencePort;
+
 
 
     @Autowired
-    public ExamService(ExamPersistencePort examPersistencePort, QuestionPersistencePort questionPersistencePort, AnswerPersistencePort answerPersistencePort, ExamMapper examMapper) {
+    public ExamService(ExamPersistencePort examPersistencePort, QuestionPersistencePort questionPersistencePort, AnswerPersistencePort answerPersistencePort, ExamMapper examMapper, UserUseCases userUseCases, UserDboMapper userDboMapper, ProfileJpaAdapter profileJpaAdapter, ApprovedExamPersistencePort approvedExamPersistencePort) {
         this.examPersistencePort = examPersistencePort;
         this.questionPersistencePort = questionPersistencePort;
         this.answerPersistencePort = answerPersistencePort;
         this.examMapper = examMapper;
+        this.userUseCases = userUseCases;
+        this.userDboMapper = userDboMapper;
+        this.profileJpaAdapter = profileJpaAdapter;
+        this.approvedExamPersistencePort = approvedExamPersistencePort;
     }
 
     @Override
@@ -94,11 +112,6 @@ public class ExamService implements ExamUseCase {
     }
 
     @Override
-    public ExamResult evaluateExamResult(ExamResultRequest examResultRequest) {
-        return null;
-    }
-
-    @Override
     public QuestionModel saveQuestion(QuestionModel questionModel) {
         return this.questionPersistencePort.save(questionModel);
     }
@@ -150,6 +163,8 @@ public class ExamService implements ExamUseCase {
                     }).toList();
 
 
+
+
             return questionModelList;
 
     }
@@ -177,4 +192,146 @@ public class ExamService implements ExamUseCase {
             }
         }));
     }
+
+
+
+    @Override
+    @Transactional
+    public ExamResult evaluateExamResult(@Valid ExamSubmissionDTO examResultRequest) {
+
+        // create the exam result to return
+        ExamResult examResultResponse = new ExamResult();
+
+        // get the exam complete
+        ExamModel exam = this.getById(examResultRequest.getExam_id());
+
+        // validate if the user exist and gather the user and profile
+        User user = this.userUseCases.getById(examResultRequest.getId_user());
+        ProfileEntity userProfile = this.profileJpaAdapter.getById(user.getProfile_id());
+
+        // question of the exam
+        List<QuestionModel> questionModelList = exam.getQuestions();
+        // answers to validate
+        List<AnswerSubmissionDto> answerSubmissionDtoList = examResultRequest.getAnswers();
+
+
+        AtomicInteger questionsCorrect = new AtomicInteger();
+        AtomicInteger questionsIncorrect = new AtomicInteger();
+        List<ResultPerQuestionDto> resultForQuestion = new ArrayList<>();
+        answerSubmissionDtoList.forEach(answerSubmissionDto -> {
+            Optional<QuestionModel> question = questionModelList.stream().filter(
+                    questionModel -> Objects.equals(questionModel.getId_question(), answerSubmissionDto.getId_question())
+            ).findFirst();
+
+            if (question.isPresent()){
+                ResultPerQuestionDto result = new ResultPerQuestionDto();
+                result.setQuestion(question.get().getQuestion());
+                result.setQuestionSelectForTheUser(answerSubmissionDto.getAnswerSelect());
+               Optional<AnswerModel> answerCorrect =  question.get().getAnswerModels()
+                       .stream()
+                       .filter(answerModel -> answerModel.getIsCorrect() == true)
+                       .findFirst();
+               // build the dto for retorn question en general
+
+               if(answerCorrect.get().getAnswerText().equals(answerSubmissionDto.getAnswerSelect())){
+                   questionsCorrect.getAndIncrement();
+                   result.setIsCorrect(true);
+               }else {
+                   questionsIncorrect.getAndIncrement();
+                   result.setIsCorrect(false);
+               }
+
+               resultForQuestion.add(result);
+            }
+
+        });
+
+        examResultResponse.setResultOfQuestions(resultForQuestion);
+
+
+        int totalOfQuestions = exam.getQuestions().size();
+        int totalQuestionCorrects = questionsCorrect.get();
+        int totalQuestionInCorrects = questionsIncorrect.get();
+        double examResult = (double) totalQuestionCorrects / totalOfQuestions * 100;;
+
+
+       // build the exam response
+        examResultResponse.setExamTitle(exam.getTitle());
+        examResultResponse.setExamId(exam.getId_exam());
+        examResultResponse.setUserId(user.getUser_id());
+        examResultResponse.setNameUser(userProfile.getName());
+        examResultResponse.setNumberOfQuestionCorrect(totalQuestionCorrects);
+        examResultResponse.setNumberOfQuestionIncorrect(totalQuestionInCorrects);
+        examResultResponse.setDate(LocalDateTime.now());
+        examResultResponse.setDurationOfTime(examResultRequest.getDurationOfTest());
+        examResultResponse.setMinimumPassingScore(
+                switch (exam.getLevel()) {
+                    case "hard" -> 90;
+                    case "intermediate" -> 80;
+                    case "easy" -> 70;
+                    default -> 0;
+                }
+        );
+        examResultResponse.setResultExam(examResult);
+
+        examResultResponse.setIsApproved(
+                this.validateIfWinTheTestByLevelAndResult(exam.getLevel(), examResult)
+        );
+
+
+        // add extra points to according the level of the test
+        int finalPoints = 0;
+
+
+        if (examResultResponse.getIsApproved()) {
+            finalPoints = exam.getPoints();
+
+            if (examResult >= 100) {
+                finalPoints += extraPoints;
+            }
+        }
+        // change the return of approved
+        examResultResponse.setPoints(finalPoints);
+
+        // information of the count
+
+        userProfile.setPoints(userProfile.getPoints() + finalPoints);
+        userProfile.setNum_exams_takes(userProfile.getNum_exams_takes() + 1);
+        if(examResultResponse.getIsApproved()){
+            userProfile.setWins(userProfile.getWins() + 1);
+        }else{
+            userProfile.setFailed(userProfile.getFailed() + 1);
+        }
+
+        // save information of the profile
+        this.profileJpaAdapter.save(userProfile);
+
+        // save the exam approved
+       if(examResultResponse.getIsApproved()) {
+           ApprovedExam approvedExam = new ApprovedExam();
+           approvedExam.setExamEntity(this.examMapper.modelToEntity(exam));
+           approvedExam.setUser(this.userDboMapper.toDbo(user));
+           approvedExam.setScore(examResultResponse.getPoints());
+           approvedExam.setIsApproved(examResultResponse.getIsApproved());
+
+           this.approvedExamPersistencePort.save(approvedExam);
+       }
+
+    return examResultResponse;
+    }
+
+    public Boolean validateIfWinTheTestByLevelAndResult(String level, Double examResult) {
+        switch (level.toLowerCase()) {
+            case "easy":
+                return examResult >= 70;
+            case "intermediate":
+                return examResult >= 80;
+            case "hard":
+                return examResult >= 90;
+            default:
+                return false;
+        }
+    }
 }
+
+// para despues, traer los examenes, y mostrar si gano o no uno y retornarle eso al front.

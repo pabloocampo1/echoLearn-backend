@@ -5,6 +5,7 @@ import com.EchoLearn_backend.application.usecases.ExamUseCase;
 import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamSubmissionDTO;
 import jakarta.validation.Valid;
 import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,11 @@ public class ExamController {
     @GetMapping(path = "/getBySubcategory/{id_subcategory}")
     public ResponseEntity<List<ExamHomeDto>> getAllBySubcategory(@PathVariable("id_subcategory") @Valid Integer id) {
         return new ResponseEntity<>(this.examUseCase.getAllExamBySubcategory(id), HttpStatus.OK);
+    }
+
+    @PostMapping(path = "/check")
+    public ResponseEntity<?> checkExam (@RequestBody  @Valid ExamSubmissionDTO examSubmissionDTO) {
+        return new ResponseEntity<>(this.examUseCase.evaluateExamResult(examSubmissionDTO), HttpStatus.OK);
     }
 
 

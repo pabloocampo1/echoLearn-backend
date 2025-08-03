@@ -2,6 +2,7 @@ package com.EchoLearn_backend.infraestructure.adapter.adapterJpaImpl;
 
 
 
+import com.EchoLearn_backend.Exception.ResourceNotFoundException;
 import com.EchoLearn_backend.domain.model.User;
 import com.EchoLearn_backend.domain.port.UserPersistencePort;
 
@@ -79,6 +80,13 @@ public class UserSpringJpaAdapter implements UserPersistencePort {
         UserEntity user = this.userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("USER WITH THAT EMAIL, NO EXIST"));
         return this.userDboMapper.toDomain(user) ;
+    }
+
+    @Override
+    public User getById(Integer user_id) {
+        UserEntity userEntity = this.userRepository.findById(user_id).
+                orElseThrow(() -> new ResourceNotFoundException("The user not exist."));
+        return this.userDboMapper.toDomain(userEntity);
     }
 
     @Override
