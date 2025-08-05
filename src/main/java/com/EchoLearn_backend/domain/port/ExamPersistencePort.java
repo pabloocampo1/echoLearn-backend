@@ -2,6 +2,7 @@ package com.EchoLearn_backend.domain.port;
 
 import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamQuestionsResponse;
 
 import java.util.List;
 
@@ -11,4 +12,5 @@ public interface ExamPersistencePort {
     List<ExamModel> getAll();
     List<ExamHomeDto> getAllExamForHome();
     List<ExamHomeDto> findAllBySubcategory(Integer id);
+    Boolean exitsExam(Long exam_id);
 }

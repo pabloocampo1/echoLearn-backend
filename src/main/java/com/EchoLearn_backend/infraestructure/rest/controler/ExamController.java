@@ -6,8 +6,8 @@ import com.EchoLearn_backend.domain.model.ExamModel;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamCreateDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamSubmissionDTO;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamQuestionsResponse;
 import jakarta.validation.Valid;
-import org.apache.http.protocol.HTTP;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +65,11 @@ public class ExamController {
     @GetMapping(path = "/getBySubcategory/{id_subcategory}")
     public ResponseEntity<List<ExamHomeDto>> getAllBySubcategory(@PathVariable("id_subcategory") @Valid Integer id) {
         return new ResponseEntity<>(this.examUseCase.getAllExamBySubcategory(id), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/getAllQuestion/{exam_id}")
+    public ResponseEntity<ExamQuestionsResponse> getAllQuestionForAnExam(@PathVariable("exam_id") @Valid String exam_id) {
+        return new ResponseEntity<>(this.examUseCase.getQuestionOfOneExam(Long.parseLong(exam_id)), HttpStatus.OK);
     }
 
     @PostMapping(path = "/check")

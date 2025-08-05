@@ -3,7 +3,7 @@ package com.EchoLearn_backend.application.service.Exam;
 import com.EchoLearn_backend.Exception.BadRequestException;
 
 
-
+import com.EchoLearn_backend.Exception.ResourceNotFoundException;
 import com.EchoLearn_backend.application.usecases.ExamUseCase;
 import com.EchoLearn_backend.application.usecases.User.UserUseCases;
 import com.EchoLearn_backend.domain.model.*;
@@ -124,6 +124,55 @@ public class ExamService implements ExamUseCase {
     @Override
     public List<QuestionModel> getAllQuestionByExamId(Long id) {
         return this.questionPersistencePort.findAllByExamId(id);
+    }
+
+    @Override
+    public ExamQuestionsResponse getQuestionOfOneExam(Long exam_id) {
+
+        if(!this.existExamByExamId(exam_id)){
+            throw new ResourceNotFoundException("No found the exam.");
+        }
+
+        ExamQuestionsResponse examQuestionsResponse = new ExamQuestionsResponse();
+        examQuestionsResponse.setExam_id(exam_id);
+
+        List<QuestionModel> questionModelList = this.getAllQuestionByExamId(exam_id);
+
+       List<QuestionResponse> questionResponseList = questionModelList
+                .stream()
+                .map(questionModel -> {
+                    QuestionResponse questionResponse = new QuestionResponse();
+                    questionResponse.setQuestion_id(questionModel.getId_question());
+                    questionResponse.setType(questionModel.getType());
+                    questionResponse.setQuestionText(questionModel.getQuestion());
+                    questionResponse.setAnswerResponseList(
+                            questionModel.getAnswerModels()
+                                    .stream()
+                                    .map(answerModel -> {
+                                        AnswerResponse answerResponse = new AnswerResponse();
+                                        answerResponse.setAnswer_id(answerModel.getId_answer());
+                                        answerResponse.setAnswerText(answerModel.getAnswerText());
+                                        return answerResponse;
+
+                                    })
+                                    .toList()
+                    );
+                    return questionResponse;
+
+                })
+                .toList();
+
+       examQuestionsResponse.setQuestionResponseList(questionResponseList);
+
+
+
+        //
+        return examQuestionsResponse;
+    }
+
+    @Override
+    public Boolean existExamByExamId(Long exam_id) {
+        return this.examPersistencePort.exitsExam(exam_id);
     }
 
 

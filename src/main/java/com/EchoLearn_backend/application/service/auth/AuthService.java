@@ -1,6 +1,7 @@
 package com.EchoLearn_backend.application.service.auth;
 
 
+import com.EchoLearn_backend.Exception.ResourceNotFoundException;
 import com.EchoLearn_backend.domain.model.User;
 import com.EchoLearn_backend.infraestructure.adapter.adapterJpaImpl.UserSpringJpaAdapter;
 import com.EchoLearn_backend.infraestructure.adapter.entity.TokenResetPassword;
@@ -49,12 +50,14 @@ public class AuthService {
 
             UserDetails user = (UserDetails) authentication.getPrincipal();
             String rolesAndAuthorities = user.getAuthorities().toString();
-
+            UserEntity userEntity = this.userRepository.findByUsername(username)
+                    .orElseThrow(() -> new ResourceNotFoundException("No user find"));
 
             String jwt = this.generateToken(authentication, rolesAndAuthorities);
             return AuthResponse
                     .builder()
                     .username(username)
+                    .user_id(userEntity.getId())
                     .message("Se auntentico correctamente")
                     .jwt(jwt)
                     .isAuthenticate(true)

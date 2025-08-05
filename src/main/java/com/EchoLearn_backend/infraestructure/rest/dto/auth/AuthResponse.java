@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public class AuthResponse {
     private final String username;
+    private final Integer user_id;
     private final String message;
     private final String jwt;
     private final Boolean isAuthenticate;
@@ -16,8 +17,9 @@ public class AuthResponse {
     private final LocalDateTime timestamp;
 
     @Builder
-    public AuthResponse(String username, String message, String jwt, Boolean isAuthenticate, String roles, LocalDateTime timestamp) {
+    public AuthResponse(String username, Integer userId, String message, String jwt, Boolean isAuthenticate, String roles, LocalDateTime timestamp) {
         this.username = username;
+        this.user_id = userId;
         this.message = message;
         this.jwt = jwt;
         this.isAuthenticate = isAuthenticate;

@@ -14,6 +14,7 @@ import com.EchoLearn_backend.infraestructure.adapter.mapper.SubcategoryDboMapper
 import com.EchoLearn_backend.infraestructure.adapter.projection.ExamHomeProjection;
 import com.EchoLearn_backend.infraestructure.adapter.repository.ExamRepositoryJpa;
 import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamHomeDto;
+import com.EchoLearn_backend.infraestructure.rest.dto.ExamDtos.ExamQuestionsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -82,5 +83,11 @@ public class ExamJpaAdapter implements ExamPersistencePort {
         return this.examRepositoryJpa.findAllBySubcategory(id)
                 .stream()
                 .map(exam -> new ExamHomeDto(exam.getId_exam(), exam.getTitle(), exam.getDescription(), exam.getLevel(), exam.getDuration(), exam.getPoints(), exam.getTotalQuestion())).toList();
+    }
+
+
+    @Override
+    public Boolean exitsExam(Long exam_id) {
+        return this.examRepositoryJpa.existsById(exam_id);
     }
 }
